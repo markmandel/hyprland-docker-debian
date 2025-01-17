@@ -21,15 +21,16 @@ RUN apt update && \
 		libxcb-composite0-dev libavutil-dev libavcodec-dev libavformat-dev libxcb-ewmh2 libxcb-ewmh-dev libxcb-present-dev libxcb-icccm4-dev libxcb-render-util0-dev libxcb-res0-dev libxcb-xinput-dev libtomlplusplus3 \
 		git libpugixml-dev \
 		libwayland-dev wayland-protocols libgbm-dev libdisplay-info-dev hwdata libzip-dev libcairo2-dev librsvg2-dev libtomlplusplus-dev \
-		libjxl-dev libmagic-dev libxcursor-dev libre2-dev libxcb-errors-dev
+		libjxl-dev libmagic-dev libxcursor-dev libre2-dev libxcb-errors-dev \
+		libsdbus-c++-dev libpam0g-dev libglvnd-dev libglvnd-core-dev file
 
-RUN git clone https://github.com/hyprwm/hyprwayland-scanner && \
+RUN 	git clone https://github.com/hyprwm/hyprwayland-scanner && \
 	cd hyprwayland-scanner && git checkout v0.4.4 && \
 	cmake -DCMAKE_INSTALL_PREFIX=/usr -B build && \
 	cmake --build build -j `nproc` && \
 	cmake --install build
 
-RUN git clone https://github.com/hyprwm/hyprutils.git && \
+RUN 	git clone https://github.com/hyprwm/hyprutils.git && \
 	cd hyprutils && git checkout v0.3.3 && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
@@ -59,8 +60,29 @@ RUN	git clone https://github.com/hyprwm/hyprgraphics && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
 	cmake --install build
 
-RUN git clone --recursive https://github.com/hyprwm/Hyprland && \
+RUN 	git clone --recursive https://github.com/hyprwm/Hyprland && \
 	cd Hyprland && git checkout v0.46.2 && \
 	make all && make install
+
+# Hyprland Utils
+
+RUN 	git clone https://github.com/hyprwm/hyprlock && \
+	cd hyprlock && git checkout v0.6.1 && \
+	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -S . -B ./build && \
+	cmake --build ./build --config Release --target hyprlock -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
+	cmake --install build
+
+# Use git rather than release (v0.7.3) - has fix for changes in hyprwayland-scanner 0.4.4
+RUN 	git clone https://github.com/hyprwm/hyprpaper && \
+	cd hyprpaper && \
+	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
+	cmake --build ./build --config Release --target hyprpaper -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
+	cmake --install ./build
+	
+RUN 	git clone https://github.com/hyprwm/hypridle && \
+	cd hypridle && git checkout v0.1.5 && \
+	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -S . -B ./build && \
+	cmake --build ./build --config Release --target hypridle -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
+	cmake --install build
 
 ENTRYPOINT ["/usr/bin/bash"]
