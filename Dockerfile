@@ -22,7 +22,8 @@ RUN apt update && \
 		git libpugixml-dev \
 		libwayland-dev wayland-protocols libgbm-dev libdisplay-info-dev hwdata libzip-dev libcairo2-dev librsvg2-dev libtomlplusplus-dev \
 		libjxl-dev libmagic-dev libxcursor-dev libre2-dev libxcb-errors-dev \
-		libsdbus-c++-dev libpam0g-dev libglvnd-dev libglvnd-core-dev file
+		libsdbus-c++-dev libpam0g-dev libglvnd-dev libglvnd-core-dev file \
+		qt6-base-dev libspa-0.2-dev libpipewire-0.3-dev 
 
 RUN 	git clone https://github.com/hyprwm/hyprwayland-scanner && \
 	cd hyprwayland-scanner && git checkout v0.4.4 && \
@@ -84,5 +85,12 @@ RUN 	git clone https://github.com/hyprwm/hypridle && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -S . -B ./build && \
 	cmake --build ./build --config Release --target hypridle -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install build
+
+RUN 	git clone --recursive https://github.com/hyprwm/xdg-desktop-portal-hyprland && \
+	cd xdg-desktop-portal-hyprland && git checkout v1.3.9 && \
+	cmake -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib -DCMAKE_INSTALL_PREFIX=/usr -B build && \
+	cmake --build build && \
+	cmake --install build
+
 
 ENTRYPOINT ["/usr/bin/bash"]
