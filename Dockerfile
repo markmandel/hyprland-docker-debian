@@ -24,7 +24,7 @@ RUN apt update && \
 		libjxl-dev libmagic-dev libxcursor-dev libre2-dev libxcb-errors-dev \
 		libsdbus-c++-dev libpam0g-dev libglvnd-dev libglvnd-core-dev file \
 		qt6-base-dev libspa-0.2-dev libpipewire-0.3-dev \
-		qt6-wayland-dev qt6-declarative-dev qt6-declarative-private-dev qt6-wayland-private-dev
+		qt6-wayland-dev qt6-declarative-dev qt6-declarative-private-dev qt6-wayland-private-dev libspng-dev
 
 RUN 	git clone https://github.com/hyprwm/hyprwayland-scanner && \
 	cd hyprwayland-scanner && git checkout v0.4.4 && \
@@ -39,7 +39,7 @@ RUN 	git clone https://github.com/hyprwm/hyprutils.git && \
 	cmake --install build
 
 RUN  	git clone https://github.com/hyprwm/aquamarine && \
-	cd aquamarine && git checkout v0.7.1 && \
+	cd aquamarine && git checkout v0.7.2 && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install build
@@ -57,13 +57,13 @@ RUN 	git clone https://github.com/hyprwm/hyprcursor && \
 	cmake --install build
 
 RUN	git clone https://github.com/hyprwm/hyprgraphics && \
-	cd hyprgraphics/ && git checkout v0.1.1 && \
+	cd hyprgraphics/ && git checkout v0.1.2 && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
 	cmake --install build
 
 RUN 	git clone --recursive https://github.com/hyprwm/Hyprland && \
-	cd Hyprland && git checkout v0.47.0 && \
+	cd Hyprland && git checkout v0.47.2 && \
 	make all && make install
 
 # Hyprland Utils
