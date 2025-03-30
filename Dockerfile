@@ -33,13 +33,13 @@ RUN 	git clone https://github.com/hyprwm/hyprwayland-scanner && \
 	cmake --install build
 
 RUN 	git clone https://github.com/hyprwm/hyprutils.git && \
-	cd hyprutils && git checkout v0.5.0 && \
+	cd hyprutils && git checkout v0.5.2 && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
 	cmake --install build
 
 RUN  	git clone https://github.com/hyprwm/aquamarine && \
-	cd aquamarine && git checkout v0.7.2 && \
+	cd aquamarine && git checkout v0.8.0 && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install build
@@ -51,7 +51,7 @@ RUN 	git clone https://github.com/hyprwm/hyprlang && \
 	cmake --install ./build
 
 RUN 	git clone https://github.com/hyprwm/hyprcursor && \
-	cd hyprcursor && git checkout v0.1.11 && \
+	cd hyprcursor && git checkout v0.1.12 && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install build
@@ -63,13 +63,13 @@ RUN	git clone https://github.com/hyprwm/hyprgraphics && \
 	cmake --install build
 
 RUN 	git clone --recursive https://github.com/hyprwm/Hyprland && \
-	cd Hyprland && git checkout v0.47.2 && \
+	cd Hyprland && git checkout v0.48.1 && \
 	make all && make install
 
 # Hyprland Utils
 
 RUN 	git clone https://github.com/hyprwm/hyprlock && \
-	cd hyprlock && git checkout v0.6.2 && \
+	cd hyprlock && git checkout v0.7.0 && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -S . -B ./build && \
 	cmake --build ./build --config Release --target hyprlock -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install build
@@ -99,3 +99,4 @@ RUN git clone https://github.com/hyprwm/hyprland-qtutils && \
     cmake --install build
 
 ENTRYPOINT ["/usr/bin/bash"]
+
