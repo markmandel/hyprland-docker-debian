@@ -66,6 +66,11 @@ RUN 	git clone --recursive https://github.com/hyprwm/Hyprland && \
 	cd Hyprland && git checkout v0.48.1 && \
 	make all && make install
 
+RUN 	cd /Hyprland/subprojects/hyprland-protocols && \
+	meson setup build && \
+	ninja -C build && \
+	ninja -C build install
+
 # Hyprland Utils
 
 RUN 	git clone https://github.com/hyprwm/hyprlock && \
@@ -81,7 +86,7 @@ RUN 	git clone https://github.com/hyprwm/hyprpaper && \
 	cmake --install ./build
 	
 RUN 	git clone https://github.com/hyprwm/hypridle && \
-	cd hypridle && git checkout v0.1.5 && \
+	cd hypridle && git checkout v0.1.6 && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -S . -B ./build && \
 	cmake --build ./build --config Release --target hypridle -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install build
