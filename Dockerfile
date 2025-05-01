@@ -103,4 +103,12 @@ RUN git clone https://github.com/hyprwm/hyprland-qtutils && \
     cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
     cmake --install build
 
+RUN apt install -y libpolkit-agent-1-dev libpolkit-qt6-1-dev
+
+RUN git clone https://github.com/hyprwm/hyprpolkitagent && \
+    cd hyprpolkitagent && git checkout v0.1.2 && \
+    cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
+    cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
+    cmake --install build
+
 ENTRYPOINT ["/usr/bin/bash"]
