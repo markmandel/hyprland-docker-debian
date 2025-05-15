@@ -33,7 +33,7 @@ RUN 	git clone https://github.com/hyprwm/hyprwayland-scanner && \
 	cmake --install build
 
 RUN 	git clone https://github.com/hyprwm/hyprutils.git && \
-	cd hyprutils && git checkout v0.7.0 && \
+	cd hyprutils && git checkout v0.7.1 && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
 	cmake --install build
@@ -63,7 +63,7 @@ RUN	git clone https://github.com/hyprwm/hyprgraphics && \
 	cmake --install build
 
 RUN 	git clone --recursive https://github.com/hyprwm/Hyprland && \
-	cd Hyprland && git checkout v0.48.1 && \
+	cd Hyprland && git checkout v0.49.0 && \
 	make all && make install
 
 RUN 	cd /Hyprland/subprojects/hyprland-protocols && \
@@ -80,7 +80,7 @@ RUN 	git clone https://github.com/hyprwm/hyprlock && \
 	cmake --install build
 
 RUN 	git clone https://github.com/hyprwm/hyprpaper && \
-	cd hyprpaper && git checkout v0.7.4 && \
+	cd hyprpaper && git checkout v0.7.5 && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target hyprpaper -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install ./build
