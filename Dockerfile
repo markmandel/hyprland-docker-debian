@@ -57,7 +57,7 @@ RUN 	git clone https://github.com/hyprwm/hyprcursor && \
 	cmake --install build
 
 RUN	git clone https://github.com/hyprwm/hyprgraphics && \
-	cd hyprgraphics/ && git checkout v0.1.4 && \
+	cd hyprgraphics/ && git checkout v0.1.5 && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
 	cmake --install build
