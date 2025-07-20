@@ -39,7 +39,7 @@ RUN 	git clone https://github.com/hyprwm/hyprutils.git && \
 	cmake --install build
 
 RUN  	git clone https://github.com/hyprwm/aquamarine && \
-	cd aquamarine && git checkout v0.9.1 && \
+	cd aquamarine && git checkout v0.9.2 && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install build
@@ -63,7 +63,7 @@ RUN	git clone https://github.com/hyprwm/hyprgraphics && \
 	cmake --install build
 
 RUN 	git clone --recursive https://github.com/hyprwm/Hyprland && \
-	cd Hyprland && git checkout v0.49.0 && \
+	cd Hyprland && git checkout v0.50.1 && \
 	make all && make install
 
 RUN 	cd /Hyprland/subprojects/hyprland-protocols && \
@@ -74,7 +74,7 @@ RUN 	cd /Hyprland/subprojects/hyprland-protocols && \
 # Hyprland Utils
 
 RUN 	git clone https://github.com/hyprwm/hyprlock && \
-	cd hyprlock && git checkout v0.8.2 && \
+	cd hyprlock && git checkout v0.9.0 && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -S . -B ./build && \
 	cmake --build ./build --config Release --target hyprlock -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install build
