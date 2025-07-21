@@ -27,7 +27,7 @@ RUN apt update && \
 		qt6-wayland-dev qt6-declarative-dev qt6-declarative-private-dev qt6-wayland-private-dev libspng-dev
 
 RUN 	git clone https://github.com/hyprwm/hyprwayland-scanner && \
-	cd hyprwayland-scanner && git checkout v0.4.4 && \
+	cd hyprwayland-scanner && git checkout v0.4.5 && \
 	cmake -DCMAKE_INSTALL_PREFIX=/usr -B build && \
 	cmake --build build -j `nproc` && \
 	cmake --install build
