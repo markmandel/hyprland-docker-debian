@@ -25,7 +25,7 @@ RUN apt update && \
 		git libpugixml-dev \
 		libwayland-dev wayland-protocols libgbm-dev libdisplay-info-dev hwdata libzip-dev libcairo2-dev librsvg2-dev libtomlplusplus-dev \
 		libjxl-dev libmagic-dev libxcursor-dev libre2-dev libxcb-errors-dev \
-		libsdbus-c++-dev libpam0g-dev libglvnd-dev libglvnd-core-dev file \
+		libsdbus-c++-dev libpam0g-dev libaudit-dev libglvnd-dev libglvnd-core-dev file \
 		qt6-base-dev libspa-0.2-dev libpipewire-0.3-dev \
 		qt6-wayland-dev qt6-declarative-dev qt6-declarative-private-dev qt6-wayland-private-dev libspng-dev
 
@@ -35,7 +35,17 @@ RUN gcc --version && gcc-15 --version
 RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-15 100 \
     && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-15 100
 
-RUN gcc --version && gcc-15 --version
+# installing and enabling gcc 14
+RUN apt install -y g++-14
+RUN gcc-14 --version
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 90 \
+    && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 90
+
+# explicitly set gcc-15 and g++-15 as the default compilers
+RUN update-alternatives --set gcc /usr/bin/gcc-15 \
+    && update-alternatives --set g++ /usr/bin/g++-15
+
+RUN gcc --version && gcc-15 --version && gcc-14 --version
 RUN update-alternatives --get-selections
 
 RUN 	git clone https://github.com/hyprwm/hyprwayland-scanner && \
@@ -84,13 +94,6 @@ RUN 	cd /Hyprland/subprojects/hyprland-protocols && \
 	ninja -C build install
 
 # Hyprland Utils
-# credits to https://github.com/JaKooLit/Debian-Hyprland/blob/main/install-scripts/hyprlock.sh for dependencies.
-RUN apt install -y 		libpam0g-dev \
-                    	libgbm-dev \
-                    	libdrm-dev \
-                        libmagic-dev \
-                        libaudit-dev \
-                        libsdbus-c++-dev
 
 RUN 	git clone https://github.com/hyprwm/hyprlock && \
 	cd hyprlock && git checkout v0.9.0 && \
