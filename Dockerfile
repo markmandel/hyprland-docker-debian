@@ -15,6 +15,9 @@
 
 FROM debian:testing
 
+# enable experimental for g++15
+COPY ./experimental.sources /etc/apt/sources.list.d/experimental.sources
+
 RUN apt update && \
 	apt install -y meson wget build-essential ninja-build cmake-extras cmake gettext gettext-base fontconfig libfontconfig-dev libffi-dev libxml2-dev libdrm-dev libxkbcommon-x11-dev \
 		libxkbregistry-dev libxkbcommon-dev libpixman-1-dev libudev-dev libseat-dev seatd libxcb-dri3-dev libegl-dev libgles2 libegl1-mesa-dev glslang-tools libinput-bin libinput-dev \
@@ -25,6 +28,15 @@ RUN apt update && \
 		libsdbus-c++-dev libpam0g-dev libglvnd-dev libglvnd-core-dev file \
 		qt6-base-dev libspa-0.2-dev libpipewire-0.3-dev \
 		qt6-wayland-dev qt6-declarative-dev qt6-declarative-private-dev qt6-wayland-private-dev libspng-dev
+
+# enabling gcc 15
+RUN apt -t experimental install -y g++-15
+RUN gcc --version && gcc-15 --version
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-15 100 \
+    && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-15 100
+
+RUN gcc --version && gcc-15 --version
+RUN update-alternatives --get-selections
 
 RUN 	git clone https://github.com/hyprwm/hyprwayland-scanner && \
 	cd hyprwayland-scanner && git checkout v0.4.5 && \
@@ -72,6 +84,13 @@ RUN 	cd /Hyprland/subprojects/hyprland-protocols && \
 	ninja -C build install
 
 # Hyprland Utils
+# credits to https://github.com/JaKooLit/Debian-Hyprland/blob/main/install-scripts/hyprlock.sh for dependencies.
+RUN apt install -y 		libpam0g-dev \
+                    	libgbm-dev \
+                    	libdrm-dev \
+                        libmagic-dev \
+                        libaudit-dev \
+                        libsdbus-c++-dev
 
 RUN 	git clone https://github.com/hyprwm/hyprlock && \
 	cd hyprlock && git checkout v0.9.0 && \
