@@ -114,7 +114,7 @@ RUN 	git clone https://github.com/hyprwm/hypridle && \
 	cmake --install build
 
 RUN 	git clone --recursive https://github.com/hyprwm/xdg-desktop-portal-hyprland && \
-	cd xdg-desktop-portal-hyprland && git checkout v1.3.9 && \
+	cd xdg-desktop-portal-hyprland && git checkout v1.3.10 && \
 	cmake -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib -DCMAKE_INSTALL_PREFIX=/usr -B build && \
 	cmake --build build && \
 	cmake --install build
