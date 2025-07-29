@@ -94,10 +94,8 @@ RUN	git clone https://github.com/hyprwm/hyprgraphics && \
 
 RUN 	cd /tmp/;git clone --recursive https://github.com/hyprwm/Hyprland && \
 	cd Hyprland && git checkout v0.50.1 && \
-	sed -i 's+/bin/sh+/bin/env+g' src/xwayland/Server.cpp && \
-	sed -i 's+"-c"+"-S"+g' src/xwayland/Server.cpp && \
-	sed -i 's+/bin/sh+/bin/env+g' src/managers/KeybindManager.cpp && \
-	sed -i 's+"-c"+"-S"+g' src/managers/KeybindManager.cpp && \
+	sed -i 's|"/bin/sh", "/bin/sh", "-c"|"/bin/env", "/bin/env", "-S"|g' src/xwayland/Server.cpp && \
+	sed -i 's|"/bin/sh", "/bin/sh", "-c"|"/bin/env", "/bin/env", "-S"|g' src/managers/KeybindManager.cpp && \
 	make all && make install && \
 	tar -cvf /tmp/Hyprland_v0.50.1.tar.gz -T build/install_manifest.txt
 
