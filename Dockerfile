@@ -55,7 +55,7 @@ RUN 	git clone https://github.com/hyprwm/hyprwayland-scanner && \
 	cmake --install build
 
 RUN 	git clone https://github.com/hyprwm/hyprutils.git && \
-	cd hyprutils && git checkout v0.8.1 && \
+	cd hyprutils && git checkout v0.8.2 && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
 	cmake --install build
@@ -67,7 +67,7 @@ RUN  	git clone https://github.com/hyprwm/aquamarine && \
 	cmake --install build
 
 RUN 	git clone https://github.com/hyprwm/hyprlang && \
-	cd hyprlang && git checkout v0.6.1 && \
+	cd hyprlang && git checkout v0.6.4 && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target hyprlang -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install ./build
