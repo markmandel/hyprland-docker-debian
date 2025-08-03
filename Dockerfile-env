@@ -56,7 +56,7 @@ RUN 	cd /tmp;git clone https://github.com/hyprwm/hyprwayland-scanner && \
 	tar -cvf /tmp/hyprwayland-scanner_v0.4.5.tar.gz -T build/install_manifest.txt
 
 RUN 	git clone https://github.com/hyprwm/hyprutils.git && \
-	cd hyprutils && git checkout v0.8.2 && \
+	cd hyprutils && git checkout v0.8.1 && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
 	cmake --install build && \
@@ -70,7 +70,7 @@ RUN  	git clone https://github.com/hyprwm/aquamarine && \
 	tar -cvf /tmp/aquamarine_v0.9.2.tar.gz -T build/install_manifest.txt
 
 RUN 	git clone https://github.com/hyprwm/hyprlang && \
-	cd hyprlang && git checkout v0.6.4 && \
+	cd hyprlang && git checkout v0.6.3 && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target hyprlang -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install ./build && \
@@ -90,8 +90,12 @@ RUN	git clone https://github.com/hyprwm/hyprgraphics && \
 	cmake --install build && \
 	tar -cvf /tmp/hyprgraphics_v0.1.5.tar.gz -T build/install_manifest.txt
 
+	## '/bin/sh -c' replacement to '/bin/env -S' -> so every user process will run without(!) an additional '/bin/sh -c' before the commands
+
 RUN 	cd /tmp/;git clone --recursive https://github.com/hyprwm/Hyprland && \
 	cd Hyprland && git checkout v0.50.1 && \
+	sed -i 's|"/bin/sh", "/bin/sh", "-c"|"/bin/env", "/bin/env", "-S"|g' src/xwayland/Server.cpp && \
+	sed -i 's|"/bin/sh", "/bin/sh", "-c"|"/bin/env", "/bin/env", "-S"|g' src/managers/KeybindManager.cpp && \
 	make all && make install && \
 	tar -cvf /tmp/Hyprland_v0.50.1.tar.gz -T build/install_manifest.txt
 
