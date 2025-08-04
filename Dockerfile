@@ -22,16 +22,18 @@ COPY ./debify.sh /usr/local/bin/debify.sh
 RUN chmod +x /usr/local/bin/debify.sh
 
 RUN apt update && \
-	apt install -y meson wget build-essential ninja-build cmake-extras cmake gettext gettext-base fontconfig libfontconfig-dev libffi-dev libxml2-dev libdrm-dev libxkbcommon-x11-dev \
-		libxkbregistry-dev libxkbcommon-dev libpixman-1-dev libudev-dev libseat-dev seatd libxcb-dri3-dev libegl-dev libgles2 libegl1-mesa-dev glslang-tools libinput-bin libinput-dev \
-		libxcb-composite0-dev libavutil-dev libavcodec-dev libavformat-dev libxcb-ewmh2 libxcb-ewmh-dev libxcb-present-dev libxcb-icccm4-dev libxcb-render-util0-dev libxcb-res0-dev libxcb-xinput-dev libtomlplusplus3 \
-		git libpugixml-dev \
-		libwayland-dev wayland-protocols libgbm-dev libdisplay-info-dev hwdata libzip-dev libcairo2-dev librsvg2-dev libtomlplusplus-dev \
-		libjxl-dev libmagic-dev libxcursor-dev libre2-dev libxcb-errors-dev \
-		libsdbus-c++-dev libpam0g-dev libaudit-dev libglvnd-dev libglvnd-core-dev file rsync \
-		qt6-base-dev libspa-0.2-dev libpipewire-0.3-dev \
-		qt6-wayland-dev qt6-declarative-dev qt6-declarative-private-dev qt6-wayland-private-dev libspng-dev \
-        libpolkit-agent-1-dev libpolkit-qt6-1-dev
+    apt install -y git meson wget build-essential ninja-build cmake-extras cmake
+
+#RUN apt update && \
+#	apt install -y gettext gettext-base fontconfig libfontconfig-dev libffi-dev libxml2-dev libdrm-dev libxkbcommon-x11-dev \
+#		libxkbregistry-dev libxkbcommon-dev libpixman-1-dev libudev-dev libseat-dev seatd libxcb-dri3-dev libegl-dev libgles2 libegl1-mesa-dev glslang-tools libinput-bin libinput-dev \
+#		libxcb-composite0-dev libavutil-dev libavcodec-dev libavformat-dev libxcb-ewmh2 libxcb-ewmh-dev libxcb-present-dev libxcb-icccm4-dev libxcb-render-util0-dev libxcb-res0-dev libxcb-xinput-dev libtomlplusplus3 \
+#		libwayland-dev wayland-protocols libgbm-dev libdisplay-info-dev hwdata libzip-dev libcairo2-dev librsvg2-dev libtomlplusplus-dev \
+#		libjxl-dev libmagic-dev libxcursor-dev libre2-dev libxcb-errors-dev \
+#		libsdbus-c++-dev libpam0g-dev libaudit-dev libglvnd-dev libglvnd-core-dev file rsync \
+#		qt6-base-dev libspa-0.2-dev libpipewire-0.3-dev \
+#		qt6-wayland-dev qt6-declarative-dev qt6-declarative-private-dev qt6-wayland-private-dev libspng-dev \
+#        libpolkit-agent-1-dev libpolkit-qt6-1-dev
 
 # enabling gcc 15
 RUN apt -t experimental install -y g++-15
@@ -57,12 +59,14 @@ RUN mkdir -p /opt/hyprland/archives
 WORKDIR /opt/hyprland
 
 ARG HYPRWAYLAND_SCANNER_VERSION=v0.4.5
+
+RUN apt install -y libpugixml-dev
 RUN git clone https://github.com/hyprwm/hyprwayland-scanner && \
 	cd hyprwayland-scanner && git checkout ${HYPRWAYLAND_SCANNER_VERSION} && \
 	cmake -DCMAKE_INSTALL_PREFIX=/usr -B build && \
 	cmake --build build -j `nproc` && \
 		cmake --install build && \
-	debify.sh hyprwayland-scanner ${HYPRWAYLAND_SCANNER_VERSION} build/install_manifest.txt
+	debify.sh hyprwayland-scanner ${HYPRWAYLAND_SCANNER_VERSION} build/install_manifest.txt "libpugixml1v5 (>= 1.14)"
 
 ARG HYPRUTILS_VERSION=v0.8.2
 RUN git clone https://github.com/hyprwm/hyprutils.git && \
