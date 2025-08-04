@@ -16,17 +16,26 @@
 
 set -euo pipefail
 
-# debify.sh <package_name> <version> <manifest_file>
-# Creates a .deb from a list of installed files. Dependencies are intentionally omitted.
+# debify.sh <package_name> <version> <manifest_file> [dep1 [dep2 ...]]
+# Creates a .deb from a list of installed files. Optional dependencies can be provided
+# as additional arguments. For versioned dependencies with spaces (e.g. "hyprutils (>= 0.8.2)"),
+# quote the whole dependency argument when calling this script.
 
-if [[ $# -ne 3 ]]; then
-  echo "Usage: $0 <package_name> <version> <manifest_file>" >&2
+if [[ $# -lt 3 ]]; then
+  echo "Usage: $0 <package_name> <version> <manifest_file> [dep1 [dep2 ...]]" >&2
   exit 1
 fi
 
 NAME="$1"
 VERSION_RAW="$2"
 MANIFEST="$3"
+
+# Optional dependencies from 4th+ args
+DEPS=( )
+if [[ $# -gt 3 ]]; then
+  # shellcheck disable=SC2206
+  DEPS=("${@:4}")
+fi
 
 if [[ ! -f "$MANIFEST" ]]; then
   echo "Manifest file not found: $MANIFEST" >&2
@@ -93,16 +102,29 @@ fi
 DEBIAN_DIR="$PKGROOT/DEBIAN"
 mkdir -p "$DEBIAN_DIR"
 ARCH="amd64"
-cat > "$DEBIAN_DIR/control" <<EOF
-Package: $NAME
-Version: $VERSION
-Architecture: $ARCH
-Maintainer: Mark Mandel <maintainer@example.com>
-Section: utils
-Priority: optional
-Description: $NAME built from source via hyprland-docker-debian
- This package was auto-generated from installed files; dependencies are not specified.
-EOF
+{
+  echo "Package: $NAME"
+  echo "Version: $VERSION"
+  echo "Architecture: $ARCH"
+  echo "Maintainer: Mark Mandel <mark.mandel@gmail.com>"
+  echo "Section: utils"
+  echo "Priority: optional"
+  if [[ ${#DEPS[@]} -gt 0 ]]; then
+    # Join deps by ", "
+    dep_line="${DEPS[0]}"
+    for ((i=1; i<${#DEPS[@]}; i++)); do
+      dep_line=", $dep_line" # prepend to preserve any commas inside items (not needed, but safe)
+      dep_line="${DEPS[i]}$dep_line"
+    done
+    # Simpler join approach
+    dep_line="$(IFS=,; echo "${DEPS[*]}")"
+    # Replace commas with ", " spacing for readability if caller did not include spaces
+    dep_line="${dep_line//,/\, }"
+    echo "Depends: $dep_line"
+  fi
+  echo "Description: $NAME built from source via hyprland-docker-debian"
+  echo " This package was auto-generated from installed files."
+} > "$DEBIAN_DIR/control"
 
 # Build the deb
 OUTDIR="/opt/hyprland/archives"

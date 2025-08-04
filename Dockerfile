@@ -136,7 +136,7 @@ RUN git clone https://github.com/hyprwm/hyprpaper && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target hyprpaper -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install ./build && \
-	debify.sh hyprpaper ${HYPRPAPER_VERSION} build/install_manifest.txt
+	debify.sh hyprpaper ${HYPRPAPER_VERSION} build/install_manifest.txt "hyprutils (>= ${HYPRUTILS_VERSION#v})"
 
 ARG HYPRIDLE_VERSION=v0.1.6
 RUN git clone https://github.com/hyprwm/hypridle && \
