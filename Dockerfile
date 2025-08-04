@@ -25,10 +25,10 @@ RUN apt update && \
     apt install -y git meson wget build-essential ninja-build cmake-extras cmake
 
 #RUN apt update && \
-#	apt install -y gettext gettext-base fontconfig libfontconfig-dev libffi-dev libxml2-dev libdrm-dev libxkbcommon-x11-dev \
-#		libxkbregistry-dev libxkbcommon-dev libpixman-1-dev libudev-dev libseat-dev seatd libxcb-dri3-dev libegl-dev libgles2 libegl1-mesa-dev glslang-tools libinput-bin libinput-dev \
+#	apt install -y gettext gettext-base fontconfig libfontconfig-dev libffi-dev libxml2-dev libxkbcommon-x11-dev \
+#		libxkbregistry-dev libxkbcommon-dev libudev-dev libseat-dev seatd libxcb-dri3-dev libegl-dev libgles2 libegl1-mesa-dev glslang-tools libinput-bin  \
 #		libxcb-composite0-dev libavutil-dev libavcodec-dev libavformat-dev libxcb-ewmh2 libxcb-ewmh-dev libxcb-present-dev libxcb-icccm4-dev libxcb-render-util0-dev libxcb-res0-dev libxcb-xinput-dev libtomlplusplus3 \
-#		libwayland-dev wayland-protocols libgbm-dev libdisplay-info-dev hwdata libzip-dev libcairo2-dev librsvg2-dev libtomlplusplus-dev \
+#		libwayland-dev  libgbm-dev libdisplay-info-dev hwdata libzip-dev libcairo2-dev librsvg2-dev libtomlplusplus-dev \
 #		libjxl-dev libmagic-dev libxcursor-dev libre2-dev libxcb-errors-dev \
 #		libsdbus-c++-dev libpam0g-dev libaudit-dev libglvnd-dev libglvnd-core-dev file rsync \
 #		qt6-base-dev libspa-0.2-dev libpipewire-0.3-dev \
@@ -59,7 +59,6 @@ RUN mkdir -p /opt/hyprland/archives
 WORKDIR /opt/hyprland
 
 ARG HYPRWAYLAND_SCANNER_VERSION=v0.4.5
-
 RUN apt install -y libpugixml-dev
 RUN git clone https://github.com/hyprwm/hyprwayland-scanner && \
 	cd hyprwayland-scanner && git checkout ${HYPRWAYLAND_SCANNER_VERSION} && \
@@ -69,20 +68,28 @@ RUN git clone https://github.com/hyprwm/hyprwayland-scanner && \
 	debify.sh hyprwayland-scanner ${HYPRWAYLAND_SCANNER_VERSION} build/install_manifest.txt "libpugixml1v5 (>= 1.14)"
 
 ARG HYPRUTILS_VERSION=v0.8.2
+RUN apt install -y libpixman-1-dev
 RUN git clone https://github.com/hyprwm/hyprutils.git && \
 	cd hyprutils && git checkout ${HYPRUTILS_VERSION} && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
 	cmake --install build && \
-	debify.sh hyprutils ${HYPRUTILS_VERSION} build/install_manifest.txt
+	debify.sh hyprutils ${HYPRUTILS_VERSION} build/install_manifest.txt "libpixman-1-0 (>= 0.44.0)"
+
+#  wayland-client
+#  gbm
+#  libudev
+#  libdisplay-info
+#  hwdata
 
 ARG AQUAMARINE_VERSION=v0.9.2
+RUN apt install -y libseat-dev libpixman-1-dev libinput-dev wayland-protocols libdrm-dev libgles2-mesa-dev
 RUN git clone https://github.com/hyprwm/aquamarine && \
 	cd aquamarine && git checkout ${AQUAMARINE_VERSION} && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install build && \
-	debify.sh aquamarine ${AQUAMARINE_VERSION} build/install_manifest.txt
+	debify.sh aquamarine ${AQUAMARINE_VERSION} build/install_manifest.txt "libseat1 (>= 0.9.0)" "libinput10 (>= 1.28.0)" "wayland-protocols (>= 1.44.0)" "hyprutils (>= ${HYPRUTILS_VERSION#v})" "libpixman-1-0 (>= 0.44.0)" "libgles2 (>=1.7.0)" "libdrm2 (>= 2.4.0)" "gbm" "libudev" "libdisplay-info" "hwdata"
 
 ARG HYPRLANG_VERSION=v0.6.4
 RUN git clone https://github.com/hyprwm/hyprlang && \
