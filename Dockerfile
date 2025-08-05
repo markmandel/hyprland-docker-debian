@@ -29,7 +29,7 @@ RUN apt update && \
 #		libxkbregistry-dev libxkbcommon-dev  libseat-dev seatd libxcb-dri3-dev libegl-dev libegl1-mesa-dev glslang-tools libinput-bin  \
 #		libxcb-composite0-dev libavutil-dev libavcodec-dev libavformat-dev libxcb-ewmh2 libxcb-ewmh-dev libxcb-present-dev libxcb-icccm4-dev libxcb-render-util0-dev libxcb-res0-dev libxcb-xinput-dev \
 #		libwayland-dev  libgbm-dev  libzip-dev  librsvg2-dev \
-#		libjxl-dev libmagic-dev libxcursor-dev libre2-dev libxcb-errors-dev \
+#		libjxl-dev libxcursor-dev libre2-dev libxcb-errors-dev \
 #		libsdbus-c++-dev libpam0g-dev libaudit-dev libglvnd-dev libglvnd-core-dev file rsync \
 #		qt6-base-dev libspa-0.2-dev libpipewire-0.3-dev \
 #		qt6-wayland-dev qt6-declarative-dev qt6-declarative-private-dev qt6-wayland-private-dev libspng-dev \
@@ -92,7 +92,7 @@ RUN git clone https://github.com/hyprwm/hyprlang && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target hyprlang -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install ./build && \
-	debify.sh hyprlang ${HYPRLANG_VERSION} build/install_manifest.txt
+	debify.sh hyprlang ${HYPRLANG_VERSION} build/install_manifest.txt "hyprutils (>= ${HYPRUTILS_VERSION#v})"
 
 ARG HYPRCURSOR_VERSION=v0.1.13
 RUN apt install -y libzip-dev libtomlplusplus-dev libcairo2-dev librsvg2-dev
@@ -101,15 +101,16 @@ RUN git clone https://github.com/hyprwm/hyprcursor && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install build && \
-	debify.sh hyprcursor ${HYPRCURSOR_VERSION} build/install_manifest.txt "libzip5 (>= 1.11.0)" "libtomlplusplus3t64 (>= 3.4.0)" " libcairo2 (>= 1.18.0)" "librsvg2-2 (>= 2.60.0)"
+	debify.sh hyprcursor ${HYPRCURSOR_VERSION} build/install_manifest.txt "libzip5 (>= 1.11.0)" "libtomlplusplus3t64 (>= 3.4.0)" " libcairo2 (>= 1.18.0)" "librsvg2-2 (>= 2.60.0)" "hyprlang (>= ${HYPRLANG_VERSION#v})"
 
 ARG HYPRGRAPHICS_VERSION=v0.1.5
+RUN apt install -y libmagic-dev
 RUN	git clone https://github.com/hyprwm/hyprgraphics && \
 	cd hyprgraphics/ && git checkout ${HYPRGRAPHICS_VERSION} && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
 	cmake --install build && \
-	debify.sh hyprgraphics ${HYPRGRAPHICS_VERSION} build/install_manifest.txt
+	debify.sh hyprgraphics ${HYPRGRAPHICS_VERSION} build/install_manifest.txt "libmagic1 (>= 5.46)"
 
 ARG HYPRLAND_VERSION=v0.50.1
 RUN git clone --recursive https://github.com/hyprwm/Hyprland && \
