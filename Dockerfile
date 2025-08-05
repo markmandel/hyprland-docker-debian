@@ -27,8 +27,8 @@ RUN apt update && \
 #RUN apt update && \
 #	apt install -y gettext gettext-base fontconfig libfontconfig-dev libffi-dev libxml2-dev libxkbcommon-x11-dev \
 #		libxkbregistry-dev libxkbcommon-dev  libseat-dev seatd libxcb-dri3-dev libegl-dev libegl1-mesa-dev glslang-tools libinput-bin  \
-#		libxcb-composite0-dev libavutil-dev libavcodec-dev libavformat-dev libxcb-ewmh2 libxcb-ewmh-dev libxcb-present-dev libxcb-icccm4-dev libxcb-render-util0-dev libxcb-res0-dev libxcb-xinput-dev libtomlplusplus3 \
-#		libwayland-dev  libgbm-dev  libzip-dev libcairo2-dev librsvg2-dev libtomlplusplus-dev \
+#		libxcb-composite0-dev libavutil-dev libavcodec-dev libavformat-dev libxcb-ewmh2 libxcb-ewmh-dev libxcb-present-dev libxcb-icccm4-dev libxcb-render-util0-dev libxcb-res0-dev libxcb-xinput-dev \
+#		libwayland-dev  libgbm-dev  libzip-dev  librsvg2-dev \
 #		libjxl-dev libmagic-dev libxcursor-dev libre2-dev libxcb-errors-dev \
 #		libsdbus-c++-dev libpam0g-dev libaudit-dev libglvnd-dev libglvnd-core-dev file rsync \
 #		qt6-base-dev libspa-0.2-dev libpipewire-0.3-dev \
@@ -95,12 +95,13 @@ RUN git clone https://github.com/hyprwm/hyprlang && \
 	debify.sh hyprlang ${HYPRLANG_VERSION} build/install_manifest.txt
 
 ARG HYPRCURSOR_VERSION=v0.1.13
+RUN apt install -y libzip-dev libtomlplusplus-dev libcairo2-dev librsvg2-dev
 RUN git clone https://github.com/hyprwm/hyprcursor && \
 	cd hyprcursor && git checkout ${HYPRCURSOR_VERSION} && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install build && \
-	debify.sh hyprcursor ${HYPRCURSOR_VERSION} build/install_manifest.txt
+	debify.sh hyprcursor ${HYPRCURSOR_VERSION} build/install_manifest.txt "libzip5 (>= 1.11.0)" "libtomlplusplus3t64 (>= 3.4.0)" " libcairo2 (>= 1.18.0)" "librsvg2-2 (>= 2.60.0)"
 
 ARG HYPRGRAPHICS_VERSION=v0.1.5
 RUN	git clone https://github.com/hyprwm/hyprgraphics && \
