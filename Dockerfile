@@ -65,6 +65,7 @@ RUN git clone https://github.com/hyprwm/hyprwayland-scanner && \
 	cmake -DCMAKE_INSTALL_PREFIX=/usr -B build && \
 	cmake --build build -j `nproc` && \
 		cmake --install build && \
+	tar -czf /opt/hyprland/archives/hyprwayland-scanner_${HYPRWAYLAND_SCANNER_VERSION}.tar.gz -T build/install_manifest.txt && \
 	debify.sh hyprwayland-scanner ${HYPRWAYLAND_SCANNER_VERSION} build/install_manifest.txt "libpugixml1v5 (>= 1.14)"
 
 ARG HYPRUTILS_VERSION=v0.8.2
@@ -74,6 +75,7 @@ RUN git clone https://github.com/hyprwm/hyprutils.git && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
 	cmake --install build && \
+	tar -czf /opt/hyprland/archives/hyprutils_${HYPRUTILS_VERSION}.tar.gz -T build/install_manifest.txt && \
 	debify.sh hyprutils ${HYPRUTILS_VERSION} build/install_manifest.txt "libpixman-1-0 (>= 0.44.0)"
 
 ARG AQUAMARINE_VERSION=v0.9.2
@@ -84,6 +86,7 @@ RUN git clone https://github.com/hyprwm/aquamarine && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install build && \
+	tar -czf /opt/hyprland/archives/aquamarine_${AQUAMARINE_VERSION}.tar.gz -T build/install_manifest.txt && \
 	debify.sh aquamarine ${AQUAMARINE_VERSION} build/install_manifest.txt "libseat1 (>= 0.9.0)" "libinput10 (>= 1.28.0)" "wayland-protocols (>= 1.44.0)" "hyprutils (>= ${HYPRUTILS_VERSION#v})" "libpixman-1-0 (>= 0.44.0)" "libgles2 (>=1.7.0)" "libdrm2 (>= 2.4.0)" "libgbm1 (>= 25.0.0)" "libudev1 (>= 257.0)" " libdisplay-info2 (>= 0.2.0)" "hwdata" " libwayland-client0 (>= 1.24.0)"
 
 ARG HYPRLANG_VERSION=v0.6.4
@@ -92,6 +95,7 @@ RUN git clone https://github.com/hyprwm/hyprlang && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target hyprlang -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install ./build && \
+	tar -czf /opt/hyprland/archives/hyprlang_${HYPRLANG_VERSION}.tar.gz -T build/install_manifest.txt && \
 	debify.sh hyprlang ${HYPRLANG_VERSION} build/install_manifest.txt "hyprutils (>= ${HYPRUTILS_VERSION#v})"
 
 ARG HYPRCURSOR_VERSION=v0.1.13
@@ -101,6 +105,7 @@ RUN git clone https://github.com/hyprwm/hyprcursor && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install build && \
+	tar -czf /opt/hyprland/archives/hyprcursor_${HYPRCURSOR_VERSION}.tar.gz -T build/install_manifest.txt && \
 	debify.sh hyprcursor ${HYPRCURSOR_VERSION} build/install_manifest.txt "libzip5 (>= 1.11.0)" "libtomlplusplus3t64 (>= 3.4.0)" " libcairo2 (>= 1.18.0)" "librsvg2-2 (>= 2.60.0)" "hyprlang (>= ${HYPRLANG_VERSION#v})"
 
 ARG HYPRGRAPHICS_VERSION=v0.1.5
@@ -110,12 +115,14 @@ RUN	git clone https://github.com/hyprwm/hyprgraphics && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
 	cmake --install build && \
+	tar -czf /opt/hyprland/archives/hyprgraphics_${HYPRGRAPHICS_VERSION}.tar.gz -T build/install_manifest.txt && \
 	debify.sh hyprgraphics ${HYPRGRAPHICS_VERSION} build/install_manifest.txt "libmagic1 (>= 5.46)"
 
 ARG HYPRLAND_VERSION=v0.50.1
 RUN git clone --recursive https://github.com/hyprwm/Hyprland && \
 	cd Hyprland && git checkout ${HYPRLAND_VERSION} && \
 	make all && make install && \
+	tar -czf /opt/hyprland/archives/Hyprland_${HYPRLAND_VERSION}.tar.gz -T build/install_manifest.txt && \
 	debify.sh Hyprland ${HYPRLAND_VERSION} build/install_manifest.txt
 
 ARG HYPRLAND_PROTOCOLS_VERSION=v0.6.4-rec
@@ -126,6 +133,7 @@ RUN cd /opt/hyprland/Hyprland/subprojects/hyprland-protocols && \
     echo "Install log:" &&  cat build/meson-logs/install-log.txt && echo "----" && \
     grep -v '^#' build/meson-logs/install-log.txt > build/install_manifest.txt && \
    	echo "Install Manifest:" &&  cat build/install_manifest.txt && echo "----" && \
+	tar -czf /opt/hyprland/archives/hyprland-protocols_${HYPRLAND_PROTOCOLS_VERSION}.tar.gz -T build/install_manifest.txt && \
 	debify.sh hyprland-protocols ${HYPRLAND_PROTOCOLS_VERSION} build/install_manifest.txt
 
 # Hyprland Utils
@@ -136,6 +144,7 @@ RUN git clone https://github.com/hyprwm/hyprlock && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -S . -B ./build && \
 	cmake --build ./build --config Release --target hyprlock -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install build && \
+	tar -czf /opt/hyprland/archives/hyprlock_${HYPRLOCK_VERSION}.tar.gz -T build/install_manifest.txt && \
 	debify.sh hyprlock ${HYPRLOCK_VERSION} build/install_manifest.txt
 
 ARG HYPRPAPER_VERSION=v0.7.5
@@ -144,6 +153,7 @@ RUN git clone https://github.com/hyprwm/hyprpaper && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target hyprpaper -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install ./build && \
+	tar -czf /opt/hyprland/archives/hyprpaper_${HYPRPAPER_VERSION}.tar.gz -T build/install_manifest.txt && \
 	debify.sh hyprpaper ${HYPRPAPER_VERSION} build/install_manifest.txt "hyprutils (>= ${HYPRUTILS_VERSION#v})"
 
 ARG HYPRIDLE_VERSION=v0.1.6
@@ -152,6 +162,7 @@ RUN git clone https://github.com/hyprwm/hypridle && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -S . -B ./build && \
 	cmake --build ./build --config Release --target hypridle -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install build && \
+	tar -czf /opt/hyprland/archives/hypridle_${HYPRIDLE_VERSION}.tar.gz -T build/install_manifest.txt && \
 	debify.sh hypridle ${HYPRIDLE_VERSION} build/install_manifest.txt
 
 ARG XDPH_VERSION=v1.3.10
@@ -160,6 +171,7 @@ RUN git clone --recursive https://github.com/hyprwm/xdg-desktop-portal-hyprland 
 	cmake -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib -DCMAKE_INSTALL_PREFIX=/usr -B build && \
 	cmake --build build && \
 	cmake --install build && \
+	tar -czf /opt/hyprland/archives/xdg-desktop-portal-hyprland_${XDPH_VERSION}.tar.gz -T build/install_manifest.txt && \
 	debify.sh xdg-desktop-portal-hyprland ${XDPH_VERSION} build/install_manifest.txt
 
 ARG HYPRLAND_QTUTILS_VERSION=v0.1.4
@@ -168,6 +180,7 @@ RUN git clone https://github.com/hyprwm/hyprland-qtutils && \
     cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
     cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
 	   	cmake --install build && \
+	tar -czf /opt/hyprland/archives/hyprland-qtutils_${HYPRLAND_QTUTILS_VERSION}.tar.gz -T build/install_manifest.txt && \
 	debify.sh hyprland-qtutils ${HYPRLAND_QTUTILS_VERSION} build/install_manifest.txt
 
 ARG HYPRLAND_QT_SUPPORT_VERSION=v0.1.0
@@ -176,6 +189,7 @@ RUN git clone https://github.com/hyprwm/hyprland-qt-support && \
     cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
     cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
 	   	cmake --install build && \
+	tar -czf /opt/hyprland/archives/hyprland-qt-support_${HYPRLAND_QT_SUPPORT_VERSION}.tar.gz -T build/install_manifest.txt && \
 	debify.sh hyprland-qt-support ${HYPRLAND_QT_SUPPORT_VERSION} build/install_manifest.txt
 
 ARG HYPRPOLKITAGENT_VERSION=v0.1.3
@@ -184,6 +198,7 @@ RUN git clone https://github.com/hyprwm/hyprpolkitagent && \
     cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
     cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
 	   	cmake --install build && \
+	tar -czf /opt/hyprland/archives/hyprpolkitagent_${HYPRPOLKITAGENT_VERSION}.tar.gz -T build/install_manifest.txt && \
 	debify.sh hyprpolkitagent ${HYPRPOLKITAGENT_VERSION} build/install_manifest.txt
 
 ENTRYPOINT ["/usr/bin/bash"]
