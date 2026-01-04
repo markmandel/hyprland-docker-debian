@@ -27,7 +27,7 @@ RUN apt update && \
 #RUN apt update && \
 #	apt install -y gettext gettext-base fontconfig libfontconfig-dev libffi-dev libxml2-dev libxkbcommon-x11-dev \
 #		libxkbregistry-dev libxkbcommon-dev  libseat-dev seatd libxcb-dri3-dev libegl-dev libegl1-mesa-dev glslang-tools libinput-bin  \
-#		libxcb-composite0-dev libavutil-dev libavcodec-dev libavformat-dev libxcb-ewmh2 libxcb-ewmh-dev libxcb-present-dev libxcb-icccm4-dev libxcb-render-util0-dev libxcb-res0-dev libxcb-xinput-dev \
+#		libxcb-composite0-dev libavutil-dev libavcodec-dev libavformat-dev libxcb-ewmh2 libxcb-ewmh-dev libxcb-present-dev libxcb-icccm4-dev libxcb-render-util0-dev  libxcb-xinput-dev \
 #		libwayland-dev  libgbm-dev  libzip-dev  librsvg2-dev \
 #		libjxl-dev libxcursor-dev libre2-dev libxcb-errors-dev \
 #		libsdbus-c++-dev libpam0g-dev libaudit-dev libglvnd-dev libglvnd-core-dev file rsync \
@@ -119,6 +119,7 @@ RUN	git clone https://github.com/hyprwm/hyprgraphics && \
 	debify.sh hyprgraphics ${HYPRGRAPHICS_VERSION} build/install_manifest.txt "libmagic1 (>= 5.46)"
 
 ARG HYPRLAND_VERSION=v0.50.1
+RUN apt install -y libxkbcommon-dev libxcursor-dev libre2-dev libxcb-res0-dev
 RUN git clone --recursive https://github.com/hyprwm/Hyprland && \
 	cd Hyprland && git checkout ${HYPRLAND_VERSION} && \
 	make all && make install && \
