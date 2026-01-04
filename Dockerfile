@@ -89,6 +89,22 @@ RUN git clone https://github.com/hyprwm/hyprwire && \
 	cmake --install build && \
 	tar -cvf /opt/hyprland/archives/hyprwire_${HYPRWIRE_VERSION}.tar.gz -T build/install_manifest.txt
 
+ARG HYPRTOOLKIT_VERSION=v0.5.2
+RUN git clone https://github.com/hyprwm/hyprtoolkit && \
+	cd hyprtoolkit && git checkout ${HYPRTOOLKIT_VERSION} && \
+	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
+	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
+	cmake --install build && \
+	tar -cvf /opt/hyprland/archives/hyprtoolkit_${HYPRTOOLKIT_VERSION}.tar.gz -T build/install_manifest.txt
+
+ARG HYPRLAND_GUIUTILS_VERSION=v0.2.1
+RUN git clone https://github.com/hyprwm/hyprland-guiutils && \
+	cd hyprland-guiutils && git checkout ${HYPRLAND_GUIUTILS_VERSION} && \
+	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
+	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
+	cmake --install build && \
+	tar -cvf /opt/hyprland/archives/hyprland-guiutils_${HYPRLAND_GUIUTILS_VERSION}.tar.gz -T build/install_manifest.txt
+
 ARG HYPRLAND_VERSION=v0.53.1
 RUN git clone --recursive https://github.com/hyprwm/Hyprland && \
 	cd Hyprland && git checkout ${HYPRLAND_VERSION} && \
@@ -114,14 +130,6 @@ RUN git clone https://github.com/hyprwm/hyprlock && \
 	cmake --build ./build --config Release --target hyprlock -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install build && \
 	tar -cvf /opt/hyprland/archives/hyprlock_${HYPRLOCK_VERSION}.tar.gz -T build/install_manifest.txt
-
-ARG HYPRTOOLKIT_VERSION=v0.5.2
-RUN git clone https://github.com/hyprwm/hyprtoolkit && \
-	cd hyprtoolkit && git checkout ${HYPRTOOLKIT_VERSION} && \
-	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
-	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
-	cmake --install build && \
-	tar -cvf /opt/hyprland/archives/hyprtoolkit_${HYPRTOOLKIT_VERSION}.tar.gz -T build/install_manifest.txt
 
 ARG HYPRPAPER_VERSION=v0.8.1
 RUN git clone https://github.com/hyprwm/hyprpaper && \
