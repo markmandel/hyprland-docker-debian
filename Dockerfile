@@ -15,9 +15,6 @@
 
 FROM debian:testing
 
-# enable experimental for g++15
-COPY ./experimental.sources /etc/apt/sources.list.d/experimental.sources
-
 RUN apt update && \
 	apt install -y meson wget build-essential ninja-build cmake-extras cmake gettext gettext-base fontconfig libfontconfig-dev libffi-dev libxml2-dev libdrm-dev libxkbcommon-x11-dev \
 		libxkbregistry-dev libxkbcommon-dev libpixman-1-dev libudev-dev libseat-dev seatd libxcb-dri3-dev libegl-dev libgles2 libegl1-mesa-dev glslang-tools libinput-bin libinput-dev \
@@ -28,26 +25,9 @@ RUN apt update && \
 		libsdbus-c++-dev libpam0g-dev libaudit-dev libglvnd-dev libglvnd-core-dev file \
 		qt6-base-dev libspa-0.2-dev libpipewire-0.3-dev \
 		qt6-wayland-dev qt6-declarative-dev qt6-declarative-private-dev qt6-wayland-private-dev libspng-dev \
-        libpolkit-agent-1-dev libpolkit-qt6-1-dev
+        libpolkit-agent-1-dev libpolkit-qt6-1-dev libmuparser-dev
 
-# enabling gcc 15
-RUN apt -t experimental install -y g++-15
-RUN gcc --version && gcc-15 --version
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-15 100 \
-    && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-15 100
-
-# installing and enabling gcc 14
-RUN apt install -y g++-14
-RUN gcc-14 --version
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 90 \
-    && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 90
-
-# explicitly set gcc-15 and g++-15 as the default compilers
-RUN update-alternatives --set gcc /usr/bin/gcc-15 \
-    && update-alternatives --set g++ /usr/bin/g++-15
-
-RUN gcc --version && gcc-15 --version && gcc-14 --version
-RUN update-alternatives --get-selections
+RUN gcc --version
 
 # play to do hyprland work
 RUN mkdir -p /opt/hyprland/archives
@@ -61,15 +41,15 @@ RUN git clone https://github.com/hyprwm/hyprwayland-scanner && \
 	cmake --install build && \
 	tar -cvf /opt/hyprland/archives/hyprwayland-scanner_${HYPRWAYLAND_SCANNER_VERSION}.tar.gz -T build/install_manifest.txt
 
-ARG HYPRUTILS_VERSION=v0.9.0
-RUN git clone https://github.com/hyprwm/hyprutils.git && \
+ARG HYPRUTILS_VERSION=v0.11.0
+RUN git clone https://github.com/hyprwm/hyprutils && \
 	cd hyprutils && git checkout ${HYPRUTILS_VERSION} && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
 	cmake --install build && \
 	tar -cvf /opt/hyprland/archives/hyprutils_${HYPRUTILS_VERSION}.tar.gz -T build/install_manifest.txt
 
-ARG AQUAMARINE_VERSION=v0.9.5
+ARG AQUAMARINE_VERSION=v0.10.0
 RUN git clone https://github.com/hyprwm/aquamarine && \
 	cd aquamarine && git checkout ${AQUAMARINE_VERSION} && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
@@ -85,7 +65,7 @@ RUN git clone https://github.com/hyprwm/hyprlang && \
 	cmake --install ./build && \
 	tar -cvf /opt/hyprland/archives/hyprlang_${HYPRLANG_VERSION}.tar.gz -T build/install_manifest.txt
 
-ARG HYPRCURSOR_VERSION=v0.1.9
+ARG HYPRCURSOR_VERSION=v0.1.13
 RUN git clone https://github.com/hyprwm/hyprcursor && \
 	cd hyprcursor && git checkout ${HYPRCURSOR_VERSION} && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
@@ -100,6 +80,14 @@ RUN	git clone https://github.com/hyprwm/hyprgraphics && \
 	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
 	cmake --install build && \
 	tar -cvf /opt/hyprland/archives/hyprgraphics_${HYPRGRAPHICS_VERSION}.tar.gz -T build/install_manifest.txt
+
+ARG HYPRWIRE_VERSION=v0.2.1
+RUN git clone https://github.com/hyprwm/hyprwire && \
+	cd hyprwire && git checkout ${HYPRWIRE_VERSION} && \
+	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
+	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
+	cmake --install build && \
+	tar -cvf /opt/hyprland/archives/hyprwire_${HYPRWIRE_VERSION}.tar.gz -T build/install_manifest.txt
 
 ARG HYPRLAND_VERSION=v0.53.1
 RUN git clone --recursive https://github.com/hyprwm/Hyprland && \
@@ -143,7 +131,7 @@ RUN git clone https://github.com/hyprwm/hypridle && \
 	cmake --install build && \
 	tar -cvf /opt/hyprland/archives/hypridle_${HYPRIDLE_VERSION}.tar.gz -T build/install_manifest.txt
 
-ARG XDPH_VERSION=v1.3.9
+ARG XDPH_VERSION=v1.3.11
 RUN git clone --recursive https://github.com/hyprwm/xdg-desktop-portal-hyprland && \
 	cd xdg-desktop-portal-hyprland && git checkout ${XDPH_VERSION} && \
 	cmake -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib -DCMAKE_INSTALL_PREFIX=/usr -B build && \
