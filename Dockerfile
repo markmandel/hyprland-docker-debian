@@ -25,7 +25,7 @@ RUN apt update && \
 		libsdbus-c++-dev libpam0g-dev libaudit-dev libglvnd-dev libglvnd-core-dev file \
 		qt6-base-dev libspa-0.2-dev libpipewire-0.3-dev \
 		qt6-wayland-dev qt6-declarative-dev qt6-declarative-private-dev qt6-wayland-private-dev libspng-dev \
-        libpolkit-agent-1-dev libpolkit-qt6-1-dev libmuparser-dev
+        libpolkit-agent-1-dev libpolkit-qt6-1-dev libmuparser-dev libiniparser-dev
 
 RUN gcc --version
 
@@ -114,6 +114,14 @@ RUN git clone https://github.com/hyprwm/hyprlock && \
 	cmake --build ./build --config Release --target hyprlock -j`nproc 2>/dev/null || getconf _NPROCESSORS_CONF` && \
 	cmake --install build && \
 	tar -cvf /opt/hyprland/archives/hyprlock_${HYPRLOCK_VERSION}.tar.gz -T build/install_manifest.txt
+
+ARG HYPRTOOLKIT_VERSION=v0.5.2
+RUN git clone https://github.com/hyprwm/hyprtoolkit && \
+	cd hyprtoolkit && git checkout ${HYPRTOOLKIT_VERSION} && \
+	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
+	cmake --build ./build --config Release --target all -j`nproc 2>/dev/null || getconf NPROCESSORS_CONF` && \
+	cmake --install build && \
+	tar -cvf /opt/hyprland/archives/hyprtoolkit_${HYPRTOOLKIT_VERSION}.tar.gz -T build/install_manifest.txt
 
 ARG HYPRPAPER_VERSION=v0.8.1
 RUN git clone https://github.com/hyprwm/hyprpaper && \
