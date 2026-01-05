@@ -57,7 +57,7 @@ RUN git clone https://github.com/hyprwm/aquamarine && \
 	cmake --install build && \
 	tar -cvf /opt/hyprland/archives/aquamarine_${AQUAMARINE_VERSION}.tar.gz -T build/install_manifest.txt
 
-ARG HYPRLANG_VERSION=v0.6.7
+ARG HYPRLANG_VERSION=v0.6.8
 RUN git clone https://github.com/hyprwm/hyprlang && \
 	cd hyprlang && git checkout ${HYPRLANG_VERSION} && \
 	cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -S . -B ./build && \
